@@ -43,7 +43,7 @@ void shellSort(int vector[], int size){
                 v2[j] = v2[j-gap];
                 j = j-gap;
             }
-            v2[j] = c;
+            v2[j] = atual;
         }
         gap = gap/2;
     }
