@@ -27,7 +27,6 @@ void showVector(int vector[], int size){
 }
 
 void shellSort(int vector[], int size){
-    clock_t t = clock();
     int gap = size/2;
     int i, atual, j, printar;
     int v2[size];
@@ -35,6 +34,7 @@ void shellSort(int vector[], int size){
     for(i = 0; i < size; i++){
         v2[i] = vector[i];
     }
+    clock_t t = clock();
     while(gap > 0){
         for(i = gap; i < size; i++){
             atual = v2[i];
@@ -48,15 +48,39 @@ void shellSort(int vector[], int size){
         gap = gap/2;
     }
     printf("====Tempo gasto %lfs====\n\n", (double)(clock()-t)/CLOCKS_PER_SEC);
-    printf("Printar vetor ordenado? (0 = nao; outro numero = sim)");
+    printf("Printar vetor ordenado? \n0 - Não; Outro - Sim\n");
+    scanf("%d", &printar);
+    if(printar != 0) showVector(v2, size);
+}
+
+void insertionSort(int vector[], int size){
+    int i, j, aux, printar;
+    int v2[size];
+    /* Cópia do vetor para não interferir com a outra ordenação */
+    for(i = 0; i < size; i++){
+        v2[i] = vector[i];
+    }
+    clock_t t = clock();
+    for(i = 1; i < size; i++){
+      aux = vector[i];
+      j = i - 1;
+      while(j >= 0 && v2[j] > aux){
+        v2[j+1] = v2[j];
+        j = j-1;
+      }
+      v2[j+1] = aux;
+    }
+    printf("====Tempo gasto %lfs====\n\n", (double)(clock()-t)/CLOCKS_PER_SEC);
+    printf("Printar vetor ordenado? \n0 - Não; Outro - Sim\n");
     scanf("%d", &printar);
     if(printar != 0) showVector(v2, size);
 }
 
 void menu(){
     puts("1 - Gerar novo vetor");
-    puts("2 - Fazer sort (insert e sort)");
-    puts("3 - Printar vetor desordenado");
+    puts("2 - Fazer sort (Shell Sort)");
+    puts("3 - Fazer sort(Insertion Sort)");
+    puts("4 - Printar vetor desordenado");
     puts("0 - Sair");
 }
 
@@ -78,6 +102,10 @@ int main(){
                  printf("Vetor nao inicializado\n");
                 break;
             case 3:
+                size>0 ? insertionSort(vector, size) :
+                 printf("Vetor nao inicializado\n");
+                break;
+            case 4:
                 size>0 ? showVector(vector, size) :
                  printf("Vetor nao inicializado\n");
         }
