@@ -26,12 +26,12 @@ void showVector(int vector[], int size){
     puts("====Fim Vetor");
 }
 
-void heapSort(int a[], int n) {
-   int i = n / 2, pai, filho, t;
-   int v2[n];
+double heapSort(int vector[], int size) {
+   int i = size / 2, pai, filho, t;
+   int v2[size];
    /* Cópia do vetor para não interferir com a outra ordenação */
-   for(i = 0; i < n; i++){
-       v2[i] = a[i];
+   for(i = 0; i < size; i++){
+       v2[i] = vector[i];
    }
    clock_t ti = clock();
    while(1) {
@@ -39,19 +39,17 @@ void heapSort(int a[], int n) {
           i--;
           t = v2[i];
       } else {
-          n--;
-          if (n == 0){
-              printf("teste\n");
-              printf("====Tempo gasto %lfs====\n\n", (double)(clock()-ti)/CLOCKS_PER_SEC);
-              return;
+          size--;
+          if (size == 0){
+              return (double)(clock()-ti)/CLOCKS_PER_SEC;
           }
-          t = v2[n];
-          v2[n] = v2[0];
+          t = v2[size];
+          v2[size] = v2[0];
       }
       pai = i;
       filho = i * 2 + 1;
-      while (filho < n) {
-          if ((filho + 1 < n)  &&  (v2[filho + 1] > v2[filho]))
+      while (filho < size) {
+          if ((filho + 1 < size)  &&  (v2[filho + 1] > v2[filho]))
               filho++;
           if (v2[filho] > t) {
              v2[pai] = v2[filho];
@@ -65,62 +63,47 @@ void heapSort(int a[], int n) {
    }
 }
 
-void shellSort(int vector[], int size){
-    int gap = size/2;
-    int i, atual, j, printar;
-    int v2[size];
-    //cópia do vetor para ordenar para não atrapalhar a outra ordenação
-    for(i = 0; i < size; i++){
-        v2[i] = vector[i];
-    }
-    clock_t t = clock();
-    while(gap > 0){
-        for(i = gap; i < size; i++){
-            atual = v2[i];
-            j = i;
-            while(j >= gap && v2[j-gap] > atual){
-                v2[j] = v2[j-gap];
-                j = j-gap;
-            }
-            v2[j] = atual;
-        }
-        gap = gap/2;
-    }
-    printf("====Tempo gasto %lfs====\n\n", (double)(clock()-t)/CLOCKS_PER_SEC);
-    printf("Printar vetor ordenado? \n0 - Não; Outro - Sim\n");
-    scanf("%d", &printar);
-    if(printar != 0) showVector(v2, size);
-}
+double quickSort(int vector[], int begin, int end){
+  int i, j, pivot, aux;
+  i = begin;
+  j = end;
+  int v2[end];
+  /* Cópia do vetor para não interferir com a outra ordenação */
+  for(i = 0; i < end; i++){
+      v2[i] = vector[i];
+  }
 
-void insertionSort(int vector[], int size){
-    int i, j, aux, printar;
-    int v2[size];
-    /* Cópia do vetor para não interferir com a outra ordenação */
-    for(i = 0; i < size; i++){
-        v2[i] = vector[i];
+  clock_t ti = clock();
+  pivot = v2[(i+j)/2];
+  while(i <= j){
+    while(v2[i] < pivot && i < end){
+      i++;
     }
-    clock_t t = clock();
-    for(i = 1; i < size; i++){
-      aux = vector[i];
-      j = i - 1;
-      while(j >= 0 && v2[j] > aux){
-        v2[j+1] = v2[j];
-        j = j-1;
-      }
-      v2[j+1] = aux;
+    while(v2[j] > pivot && j > begin){
+      j--;
     }
-    printf("====Tempo gasto %lfs====\n\n", (double)(clock()-t)/CLOCKS_PER_SEC);
-    printf("Printar vetor ordenado? \n0 - Não; Outro - Sim\n");
-    scanf("%d", &printar);
-    if(printar != 0) showVector(v2, size);
+    if(i <= j){
+      aux = v2[i];
+      v2[i] = v2[j];
+      v2[j] = aux;
+      i++;
+      j--;
+    }
+  }
+  if(j > begin){
+    quickSort(v2, begin, j);
+  }
+  if(i < end){
+    quickSort(v2, i, end);
+  }
+  return (double)(clock()-ti)/CLOCKS_PER_SEC;
 }
 
 void menu(){
     puts("1 - Gerar novo vetor");
-    puts("2 - Fazer sort (Shell Sort)");
-    puts("3 - Fazer sort (Shell Sort)");
-    puts("4 - Fazer sort(Insertion Sort)");
-    puts("5 - Printar vetor desordenado");
+    puts("2 - Fazer sort (Merge Sort)");
+    puts("3 - Fazer sort (Quick Sort)");
+    puts("4 - Printar vetor desordenado");
     puts("0 - Sair");
 }
 
@@ -138,18 +121,16 @@ int main(){
                 createVector(vector, size);
                 break;
             case 2:
-                size>0 ? heapSort(vector, size) :
+                size>0 ? printf("====Tempo gasto %lfs====\n\n",
+                    heapSort(vector, size)) :
                  printf("Vetor nao inicializado\n");
                 break;
             case 3:
-                size>0 ? shellSort(vector, size) :
+                size>0 ? printf("====Tempo gasto %lfs====\n\n",
+                    quickSort(vector, 0, size)) :
                  printf("Vetor nao inicializado\n");
                 break;
             case 4:
-                size>0 ? insertionSort(vector, size) :
-                 printf("Vetor nao inicializado\n");
-                break;
-            case 5:
                 size>0 ? showVector(vector, size) :
                  printf("Vetor nao inicializado\n");
         }
